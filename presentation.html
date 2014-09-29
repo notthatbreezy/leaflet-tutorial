@@ -1,0 +1,414 @@
+<!--
+Adapted from google IO slide templates
+
+Original Authors: Eric Bidelman <ebidel@gmail.com>
+                  Luke Mahé <lukem@google.com>
+
+URL: https://code.google.com/p/io-2012-slides
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <!--<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">-->
+  <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+  <!--This one seems to work all the time, but really small on ipad-->
+  <!--<meta name="viewport" content="initial-scale=0.4">-->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="stylesheet" media="all" href="/static/theme/css/default.css">
+  <link rel="stylesheet" media="only screen and (max-device-width: 480px)" href="/static/theme/css/phone.css">
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->
+  <script data-main="/static/js/slides/slides" src="/static/js/slides/require-1.0.8.min.js"></script>
+  <script src="/static/lib/js/leaflet-src.js"></script>
+</head>
+<body style="opacity: 0">
+
+<slides class="layout-widescreen">
+
+  <slide class="title-slide dark">
+  </slide>
+
+  <slide class="title-slide segue nobackground">
+    <!-- The content of this hgroup is replaced programmatically through the slide_config.json. -->
+    <img src="/static/css/leaflet.png" class="reflect" alt="Screenshot of Leaflet Map" title="A Leaflet Map">
+    <hgroup class="auto-fadein">
+      <h1 data-config-title><!-- populated from slide_config.json --></h1>
+      <h2 data-config-subtitle><!-- populated from slide_config.json --></h2>
+      <p data-config-presenter><!-- populated from slide_config.json --></p>
+    </hgroup>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Getting started with leaflet</h2>
+    </hgroup>
+    <article>
+      <p>"Leaflet is a modern open-source JavaScript library for mobile-friendly interactive maps." ~ <a href="http://leafletjs.com/">http://leafletjs.com/</a></p>
+      <ul>
+        <li>Walkthrough basic leaflet maps
+          <ul>
+            <li>Single tilelayer</li>
+          </ul>
+          <ul>
+            <li>Multiple tilelayer with selection dropdown</li>
+          </ul>
+          <ul>
+            <li>Adding points + polygons with geojson</li>
+          </ul>
+          <ul>
+            <li>Using leaflet plugins</li>
+          </ul>
+        </li>
+        <li>Ask Questions</li>
+        <li>Follow along: INSERT LINK HERE</li>
+      </ul>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Following Along</h2>
+    </hgroup>
+    <article>
+      <ul>
+        <li>Download files from github: <a href="http://github.com/notthatbreezy/leaflet-tutorial">github.com/notthatbreezy/leaflet-tutorial</a></li>
+        <li>Start a webserver to serve files from repository
+          <ul>
+            <li>Download cross-platform one written in Go: <a href="https://github.com/notthatbreezy/simple-go-fileserver/releases">https://github.com/notthatbreezy/simple-go-fileserver/releases</a>
+              <ul>
+                <li><a href="https://github.com/notthatbreezy/simple-go-fileserver/releases/download/v1.0/simple-fileserver.exe">Windows (64-bit)</a></li>
+                <li><a href="https://github.com/notthatbreezy/simple-go-fileserver/releases/download/v1.0/simple-fileserver-mac">Mac (64-bit)</a></li>
+                <li><a href="https://github.com/notthatbreezy/simple-go-fileserver/releases/download/v1.0/simple-fileserver">Linux (64-bit)</a></li>
+              </ul>
+            </li>
+            <li>Move executable to same directory where tutorial files are</li>
+            <li>Open a terminal, navigate to directory, and run executable</li>
+          </ul>
+        </li>
+        <li>Follow presentation from website: <a href="http://notthatbreezy.com/leaflet-tutorial">notthatbreezy.com/leaflet-tutorial/</a></li>
+      </ul>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>A Basic Leaflet Map</h2>
+    </hgroup>
+    <article>
+      <pre class="prettyprint" data-lang="html">
+        &lt;html&gt;
+          &lt;head&gt;
+            &lt;title&gt;A Leaflet map!&lt;/title&gt;
+            <b>&lt;!-- Load leaflet javascript and CSS files --&gt;
+            &lt;link rel="stylesheet" href="/static/lib/css/leaflet.css"/&gt;
+            &lt;script src="/static/lib/js/leaflet-src.js"&gt;&lt;/script&gt;</b>
+          &lt;/head&gt;
+          &lt;body&gt;
+            &lt;!-- Load CSS for page --&gt;
+            &lt;link rel="stylesheet" href="/static/css/main.css"/&gt;
+            <b>&lt;div id="basic-map"&gt;Leaflet&lt;/div&gt;</b>
+          &lt;/body&gt;
+          &lt;footer&gt;
+            <b>&lt;!-- Load javascript to display map --&gt;
+            &lt;script src="/static/js/basic.js"&gt;&lt;/script&gt;</b>
+          &lt;/footer&gt;
+         &lt;/html&gt;
+      </pre>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>A Basic Leaflet Map</h2>
+    </hgroup>
+    <br>
+    <pre class="prettyprint" data-lang="javascript">
+/**
+ * Initialize the map on the page
+ *   - need an empty div with an id to insert map into
+ *   - setView centers the map on coordinates (Philly City Hall)
+ */
+<b>var map = L.map('basic-map').setView([39.952299, -75.163256], 13);</b>
+
+/**
+ * Add OpenStreetMap tiles to the map
+ *
+ * There are many open-source, freely available tiles
+ * for leaflet.
+ *   See: http://leaflet-extras.github.io/leaflet-providers/preview/
+ */
+<b>L.tileLayer('http://{s}.www.toolserver.org/tiles/bw-mapnik/{z}/{x}/{y}.png', {
+     attribution: '&copy; &lt;a href="http://openstreetmap.org"&gt;OpenStreetMap&lt;/a&gt;' +
+         '&lt;a href="http://creativecommons.org/licenses/by-sa/2.0/"&gt;CC-BY-SA&lt;/a&gt;'
+ }).addTo(map);</b>
+    </pre>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>A Basic Leaflet Map</h2>
+    </hgroup>
+    <article>
+      <iframe data-src="basic.html" style="height:500px;"></iframe>
+      <a href="basic.html">Link</a>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Leaflet Map with Multiple Layers</h2>
+    </hgroup>
+    <br>
+    <pre class="prettyprint" data-lang="javascript">
+// Basemap Layers
+var natGeoLayer = L.tileLayer('http://server.arcgisonline.co...ile/{z}/{y}/{x}', {
+    attribution: 'Tiles &copy; Esri &mdash; National...',
+    maxZoom: 16
+});
+var mapQuestOpenAerial = L.tileLayer('http://oatile{s}.mqcdn.co.../{z}/{x}/{y}.jpg', {
+    attribution: 'Tiles Courtesy of &lt;a href="http://www.mapquest.com/"&gt;MapQuest&lt;/a&gt; ...',
+    subdomains: '1234'
+});
+
+// Weather Layers
+var cloudLayer = L.tileLayer('http://{s}.tile.openweathermap.../{z}/{x}/{y}.png', {
+    attribution: 'Map data &copy; &lt;a href="http://openweathermap.org"&gt;OpenWeatherMap&lt;/a&gt;',
+    opacity: 0.7
+});
+...
+var pressureCountourLayer = L.tileLayer('http://{s}.tile.openwea...ntr/{z}/{x}/{y}.png', {
+    attribution: 'Map data &copy; &lt;a href="http://openweathermap.org"&gt;OpenWeatherMap&lt;/a&gt;',
+    opacity: 0.5
+});
+    </pre>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Leaflet Map with Multiple Layers</h2>
+    </hgroup>
+    <br>
+    <pre class="prettyprint" data-lang="javascript">
+// Create Map
+var map = L.map('basic-map', {
+    center: [39.952299, -75.163256],
+    zoom: 5,
+    layers: [natGeoLayer, cloudLayer]
+});
+
+// Create LayerGroups
+var baseMaps = {
+    "ESRI National Geographic": natGeoLayer,
+    "MapQuest Open Aerial": mapQuestOpenAerial
+}
+var weatherMaps = {
+    "Clouds": cloudLayer,
+    "Precipitation": precipitationLayer,
+    "Pressure": pressureCountourLayer
+};
+
+<b>L.control.layers(baseMaps, weatherMaps).addTo(map);</b>
+    </pre>
+  </slide>
+
+
+  <slide>
+    <hgroup>
+      <h2>Leaflet Map with Multiple Layers</h2>
+    </hgroup>
+    <article>
+      <iframe data-src="multiple-layers.html" style="height:500px;"></iframe>
+      <a href="multiple-layers.html">Link</a>
+    </article>
+  </slide>
+
+
+  <slide>
+    <hgroup>
+      <h2>Leaflet Map with Points</h2>
+    </hgroup>
+    <article class="smaller">
+    <pre class="prettyprint" data-lang="javascript">
+L.geoJson(geojsonFeature, options).addTo(map);
+    </pre>
+    <p>Able to customize how features are drawn on the map by <a href="http://leafletjs.com/reference.html#geojson-options">editing options objects</a></p>
+    <pre class="prettyprint" data-lang="javascript">
+var <b>cornucopiaIcon</b> = L.icon({
+    iconUrl: 'lib/images/cornucopia.png',
+    iconSize: [60,50]
+});
+var <b>createMarker</b> = function(feature, latlng) {
+    var marker = L.marker(latlng, <b>{icon: cornucopiaIcon}</b>);
+    marker.bindPopup('&lt;b&gt;' + feature.properties.NAME + '&lt;/b&gt;&lt;br/&gt;' +
+                     feature.properties.ADDRESS + '&lt;br/&gt;' +
+                     feature.properties.DAY_TIME)
+    return marker
+}
+var displayFarmersMarkets = function(data) {
+    <b>L.geoJson(data, {
+        pointToLayer: createMarker
+    })</b>.addTo(map);
+}
+    </pre>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Geojson</h2>
+    </hgroup>
+    <article class="smaller">
+      <p>Standardizes representing <a href="http://geojson.org/geojson-spec.html">geospatial data using JSON</a>.</p>
+    <pre class="prettyprint" data-lang="javascript">
+{
+  "type": <b>"FeatureCollection"</b>,
+  "features": [
+    {
+      <b>"geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.15351422696591,
+          40.0642869592902
+        ]
+      }</b>,
+      "type": "Feature",
+      "id": 1,
+      <b>"properties": {
+        "DAY_TIME": "Tu 2-6",
+        "NAME": "West Oak Lane",
+        "ADDRESS": "72nd Ave and Ogontz Ave, 19138"
+      }</b>
+    }
+  ]
+}
+    </pre>
+    <p>Use <a href="http://geojsonlint.com/">GeoJSONLint</a> to check for syntax errors</p>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Leaflet Map with Points</h2>
+    </hgroup>
+    <article>
+      <iframe data-src="points.html" style="height:500px;"></iframe>
+      <a href="points.html">Link</a>
+    </article>
+  </slide>
+
+
+  <slide>
+    <hgroup>
+      <h2>Leaflet Map with Polygons</h2>
+    </hgroup>
+    <article class="smaller">
+      <p>Can use <a href="http://jquery.com/">jQuery</a> to load external data</p>
+      <pre class="prettyprint" data-lang="javascript">
+$.getJSON( url [, data ] [, success ])
+      </pre>
+      <p>This may look a little weird, especially if you are used to programming in python or ruby<p>
+      <pre class="prettyprint" data-lang="python">
+r = requests.get(url)
+json_data = r.json()
+# do something with json
+...
+      </pre>
+<p>Browsers cannot wait for a response, preventing other computations</p>
+
+      <pre class="prettyprint" data-lang="javascript">
+var neighborhoodsURL = "static/data/neighborhoods.geojson"
+
+$.getJSON(neighborhoodsURL, <b>function(data) {
+    L.geoJson(data, {
+        onEachFeature: function(feature, layer) {
+            layer.bindPopup(feature.properties.listname)
+        }
+    }</b>).addTo(map)
+});
+      </pre>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Leaflet Map with Polygons</h2>
+    </hgroup>
+    <article>
+      <iframe data-src="polygons.html" style="height:500px;"></iframe>
+      <a href="polygons.html">Link</a>
+    </article>
+  </slide>
+
+
+  <slide>
+    <hgroup>
+      <h2>Leaflet Map with Plugins</h2>
+    </hgroup>
+    <article class="smaller">
+      <p>Leaflet has <a href="http://leafletjs.com/plugins.html">many plugins</a> that extend its functionality</p>
+      <ul>
+        <li><a href="https://github.com/mapbox/leaflet-omnivore">Omnivore</a> - parses other data formats beside GeoJSON</li>
+        <li><a href="https://github.com/Leaflet/Leaflet.markercluster">Markercluster</a> - Clusters markers on the map</li>
+      </ul>
+      <pre class="prettyprint" data-lang="html">
+
+      </pre>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Leaflet Map with Plugins</h2>
+    </hgroup>
+    <article>
+      <iframe data-src="basic.html" style="height:500px;"></iframe>
+      <a href="basic.html">Link</a>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Data Resources</h2>
+    </hgroup>
+    <article>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Leaflet Resources</h2>
+    </hgroup>
+    <article>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Javascript Resources</h2>
+    </hgroup>
+    <article>
+    </article>
+  </slide>
+
+  <slide class="thank-you-slide segue nobackground">
+    <article class="flexbox vleft auto-fadein">
+      <h2>&lt;Thank You!&gt;</h2>
+      <p>Important contact information goes here.</p>
+    </article>
+    <p class="auto-fadein" data-config-contact>
+      <!-- populated from slide_config.json -->
+    </p>
+  </slide>
+
+  <slide class="backdrop"></slide>
+
+</slides>
+
+<!--[if IE]>
+  <script src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"></script>
+  <script>CFInstall.check({mode: 'overlay'});</script>
+<![endif]-->
+</body>
+</html>
