@@ -30,7 +30,7 @@ var bikeRacksLayer = L.geoJson(null, {
 });
 
 // Parse bikeracks CSV
-var bikeRacks = omnivore.csv('/data/bike_racks.csv',
+var bikeRacks = omnivore.csv('/static/data/bike_racks.csv',
                              null, bikeRacksLayer)
     .on('ready', function() {
         // Zoom map to extent

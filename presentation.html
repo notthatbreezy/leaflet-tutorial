@@ -62,14 +62,13 @@ URL: https://code.google.com/p/io-2012-slides
           </ul>
         </li>
         <li>Ask Questions</li>
-        <li>Follow along: INSERT LINK HERE</li>
       </ul>
     </article>
   </slide>
 
   <slide>
     <hgroup>
-      <h2>Following Along</h2>
+      <h2>Getting Started</h2>
     </hgroup>
     <article>
       <ul>
@@ -85,9 +84,10 @@ URL: https://code.google.com/p/io-2012-slides
             </li>
             <li>Move executable to same directory where tutorial files are</li>
             <li>Open a terminal, navigate to directory, and run executable</li>
+            <li>Open a browser and go to <a href="http://localhost:9090">http://localhost:9090</a></li>
           </ul>
         </li>
-        <li>Follow presentation from website: <a href="http://notthatbreezy.com/leaflet-tutorial">notthatbreezy.com/leaflet-tutorial/</a></li>
+        <li>Follow presentation from website: <a href="http://notthatbreezy.com/leaflet-tutorial/presentation.html">notthatbreezy.com/leaflet-tutorial/presentation.html</a></li>
       </ul>
     </article>
   </slide>
@@ -353,7 +353,42 @@ $.getJSON(neighborhoodsURL, <b>function(data) {
         <li><a href="https://github.com/Leaflet/Leaflet.markercluster">Markercluster</a> - Clusters markers on the map</li>
       </ul>
       <pre class="prettyprint" data-lang="html">
+&lt;!-- Load leaflet marker cluster plugin files --&gt;
+&lt;link rel="stylesheet" href="/static/lib/css/MarkerCluster.Default.css"/&gt;
+&lt;link rel="stylesheet" href="/static/lib/css/MarkerCluster.css"/&gt;
+&lt;script src="/static/lib/js/leaflet.markercluster.js"&gt;&lt;/script&gt;
 
+&lt;!-- Load leaflet omnivore plugin.js --&gt;
+&lt;script src="//api.tiles.mapbox.com/mapbox.js...-omnivore/v0.1.2/leaflet-omnivore.min.js"&gt;&lt;/script&gt;
+      </pre>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Leaflet Map with Plugins</h2>
+    </hgroup>
+    <article class="smaller">
+      <p>Using omnivore to load a CSV is very similar to loading GeoJSON</p>
+      <pre class="prettyprint" data-lang="javascript">
+var bikeRacks = omnivore.csv('/data/bike_racks.csv',
+                             null, bikeRacksLayer)
+    <b>.on('ready'</b>, function() {
+        // Zoom map to extent
+        map.fitBounds(bikeRacks.getBounds());
+
+        // Create a marker cluster group
+       <b>var markers = L.markerClusterGroup({
+            showCoverageOnHover: false,
+            maxClusterRadius: 50
+        });
+
+        // Add markers to cluster group
+        markers.addLayer(bikeRacks);</b>
+
+        // Add layer to map
+        map.addLayer(markers);
+    });
       </pre>
     </article>
   </slide>
@@ -363,8 +398,8 @@ $.getJSON(neighborhoodsURL, <b>function(data) {
       <h2>Leaflet Map with Plugins</h2>
     </hgroup>
     <article>
-      <iframe data-src="basic.html" style="height:500px;"></iframe>
-      <a href="basic.html">Link</a>
+      <iframe data-src="leaflet-plugins-example.html" style="height:500px;"></iframe>
+      <a href="leaflet-plugins-example.html">Link</a>
     </article>
   </slide>
 
@@ -373,29 +408,29 @@ $.getJSON(neighborhoodsURL, <b>function(data) {
       <h2>Data Resources</h2>
     </hgroup>
     <article>
+      <p><a href="http://www.opendataphilly.org/">Open Data Philly</a></p>
+      <p><a href="https://github.com/CityOfPhiladelphia/phl-open-geodata">PHL Open Geodata</a></p>
+      <p><a href="http://www.pasda.psu.edu/">Pennsylvania Geospatial Data Clearinghouse</a></p>
     </article>
   </slide>
 
   <slide>
     <hgroup>
-      <h2>Leaflet Resources</h2>
+      <h2>Map + Javascript Resources</h2>
     </hgroup>
     <article>
-    </article>
-  </slide>
-
-  <slide>
-    <hgroup>
-      <h2>Javascript Resources</h2>
-    </hgroup>
-    <article>
+      <p><a href="http://leafletjs.com/reference.html">Leaflet Reference</a></p>
+      <p><a href="http://maptimeboston.github.io/leaflet-intro/">Maptime Boston Leaflet Intro</a></p>
+      <p><a href="https://www.mapbox.com/mapbox.js/api/v2.1.0/">Mapbox JS</a></p>
+      <p><a href=""></a></p>
     </article>
   </slide>
 
   <slide class="thank-you-slide segue nobackground">
     <article class="flexbox vleft auto-fadein">
-      <h2>&lt;Thank You!&gt;</h2>
-      <p>Important contact information goes here.</p>
+      <h2>Like Maps?</h2>
+      <h3>Azavea is Hiring! <a style="color:black;" href="http://jobs.azavea.com/">http://jobs.azavea.com/</a></h3>
+      <h3>Check out GeoPhilly <a style="color:black;" href="http://www.meetup.com/GeoPhilly/">http://www.meetup.com/GeoPhilly/</a></h3>
     </article>
     <p class="auto-fadein" data-config-contact>
       <!-- populated from slide_config.json -->
